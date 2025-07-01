@@ -1,0 +1,115 @@
+package dbms;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.JTextField;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+public class ResultFrame extends JFrame {
+
+	private JPanel contentPane;
+	private JTextField textField;
+	private JTable table;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					ResultFrame frame = new ResultFrame();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	Connection conn = null;
+
+	/**
+	 * Create the frame.
+	 */
+	public ResultFrame() {
+		conn = ConnectDB.dbConnector();
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 800, 500);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JButton BackBT = new JButton("Back");
+		BackBT.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MainFrame MF = new MainFrame();
+				MF.setVisible(true);
+			}
+		});
+		BackBT.setBounds(680, 104, 94, 34);
+		contentPane.add(BackBT);
+		
+		JLabel lblResults = new JLabel("Results:");
+		lblResults.setFont(new Font("Times New Roman", Font.BOLD, 30));
+		lblResults.setBounds(35, 30, 155, 40);
+		contentPane.add(lblResults);
+		
+		JLabel IdLB = new JLabel("ID:");
+		IdLB.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		IdLB.setBounds(57, 99, 116, 40);
+		contentPane.add(IdLB);
+		
+		textField = new JTextField();
+		textField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				
+				try {
+					String query = "select * from Sample where PID=?";
+					PreparedStatement pst = conn.prepareStatement(query);
+					pst.setString(1,textField.getText());
+					ResultSet rs = pst.executeQuery();
+					
+
+				} catch (Exception ae) {
+					ae.printStackTrace();
+				}
+				
+			}
+		});
+		textField.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		textField.setColumns(10);
+		textField.setBounds(205, 98, 116, 40);
+		contentPane.add(textField);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 182, 764, 268);
+		contentPane.add(scrollPane);
+		
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		
+		JLabel lblNewLabel = new JLabel("New label");
+		lblNewLabel.setBounds(0, 0, 997, 616);
+		lblNewLabel.setIcon(new ImageIcon("G:\\My Drive\\mini project\\icons\\backfrm1.png"));
+		contentPane.add(lblNewLabel);
+	}
+}

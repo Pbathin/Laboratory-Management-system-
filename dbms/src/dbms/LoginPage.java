@@ -1,0 +1,129 @@
+package dbms;
+
+import java.awt.EventQueue;
+import java.awt.*;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import java.awt.Font;
+import java.awt.BorderLayout;
+import javax.swing.ImageIcon;
+
+import java.sql.*;
+
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.JPasswordField;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class LoginPage {
+
+	private JFrame frame;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					LoginPage window = new LoginPage();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	Connection conn = null;
+	private JTextField UserNameTB;
+	private JPasswordField passwordField;
+
+	/**
+	 * Create the application.
+	 */
+	public LoginPage() {
+		initialize();
+		conn = ConnectDB.dbConnector();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		
+		frame = new JFrame();
+		frame.setBounds(100, 100, 800, 500);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		
+		JLabel LoginLab = new JLabel("Login");
+		LoginLab.setFont(new Font("Times New Roman", Font.BOLD, 30));
+		LoginLab.setBounds(90, 27, 144, 45);
+		frame.getContentPane().add(LoginLab);
+		
+		JLabel UserNameBT = new JLabel("User Name:");
+		UserNameBT.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		UserNameBT.setBounds(90, 110, 144, 29);
+		frame.getContentPane().add(UserNameBT);
+		
+		UserNameTB = new JTextField();
+		UserNameTB.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		UserNameTB.setBounds(90, 150, 373, 45);
+		frame.getContentPane().add(UserNameTB);
+		UserNameTB.setColumns(10);
+		
+		JLabel PassLb = new JLabel("Password:");
+		PassLb.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		PassLb.setBounds(90, 246, 144, 34);
+		frame.getContentPane().add(PassLb);
+		
+		passwordField = new JPasswordField();
+		passwordField.setBounds(90, 291, 373, 45);
+		frame.getContentPane().add(passwordField);
+		
+		JButton LoginBT = new JButton("Login");
+		LoginBT.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String query = "select * from users where UName=? and Password=?";
+					PreparedStatement pst = conn.prepareStatement(query);
+					pst.setString(1, UserNameTB.getText());
+					pst.setString(2, passwordField.getText());
+					
+					ResultSet rs = pst.executeQuery();
+					int count = 0;
+					while(rs.next()) {
+						count = count+1;
+					}
+					if(count ==1) {
+						JOptionPane.showMessageDialog(null, "Successfully logged in.");
+						frame.dispose();
+						MainFrame MF = new MainFrame();
+						MF.setVisible(true);
+					}
+					else if (count > 1) {
+						JOptionPane.showMessageDialog(null, "Duplicate Username and Password.");
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "Incorrect Username and Password. Try again...");
+					}
+					
+				} catch(Exception ae) {
+					JOptionPane.showMessageDialog(null, ae);
+					
+				}
+			}
+		});
+		LoginBT.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		LoginBT.setBounds(565, 383, 133, 45);
+		frame.getContentPane().add(LoginBT);
+		
+		JLabel lblNewLabel = new JLabel("New label");
+		lblNewLabel.setBounds(0, 0, 807, 462);
+		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\Dell\\Desktop\\mini project\\icons\\backfrm1.png"));
+		frame.getContentPane().add(lblNewLabel);
+	}
+}

@@ -1,0 +1,261 @@
+package dbms;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import javax.swing.JTextField;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.awt.event.ActionEvent;
+import javax.swing.JRadioButton;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+
+public class PatientFrame extends JFrame {
+
+	private JPanel contentPane;
+	private JTextField IdTF;
+	private JTextField NameTF;
+	private JTextField DobTF;
+	private JTextField PhoneTF;
+	private JTextField EmailTF;
+	private JTable table;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					PatientFrame frame = new PatientFrame();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	Connection conn = null;
+	String gender = new String();
+
+	/**
+	 * Create the frame.
+	 */
+	public PatientFrame() {
+		conn = ConnectDB.dbConnector();
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 800, 500);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setBounds(10, 143, 46, 14);
+		contentPane.add(lblNewLabel);
+		
+		JButton BackBT = new JButton("Back");
+		BackBT.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MainFrame MF = new MainFrame();
+				MF.setVisible(true);
+			}
+		});
+		BackBT.setBounds(685, 427, 89, 23);
+		contentPane.add(BackBT);
+		
+		JLabel lblPatients = new JLabel("Patients:");
+		lblPatients.setFont(new Font("Times New Roman", Font.BOLD, 30));
+		lblPatients.setBounds(27, 22, 155, 40);
+		contentPane.add(lblPatients);
+		
+		JLabel IdLB = new JLabel("ID:");
+		IdLB.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		IdLB.setBounds(27, 111, 116, 40);
+		contentPane.add(IdLB);
+		
+		IdTF = new JTextField();
+		IdTF.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		IdTF.setColumns(10);
+		IdTF.setBounds(153, 111, 116, 40);
+		contentPane.add(IdTF);
+		
+		JLabel NameLB = new JLabel("Name:");
+		NameLB.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		NameLB.setBounds(27, 168, 116, 40);
+		contentPane.add(NameLB);
+		
+		NameTF = new JTextField();
+		NameTF.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		NameTF.setColumns(10);
+		NameTF.setBounds(153, 168, 116, 40);
+		contentPane.add(NameTF);
+		
+		JLabel DobLB = new JLabel("DOB:");
+		DobLB.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		DobLB.setBounds(27, 229, 116, 40);
+		contentPane.add(DobLB);
+		
+		DobTF = new JTextField();
+		DobTF.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		DobTF.setColumns(10);
+		DobTF.setBounds(153, 229, 116, 40);
+		contentPane.add(DobTF);
+		
+		JLabel PhoneLB = new JLabel("Phone No:");
+		PhoneLB.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		PhoneLB.setBounds(27, 280, 116, 40);
+		contentPane.add(PhoneLB);
+		
+		PhoneTF = new JTextField();
+		PhoneTF.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		PhoneTF.setColumns(10);
+		PhoneTF.setBounds(153, 280, 116, 40);
+		contentPane.add(PhoneTF);
+		
+		JLabel EmailLB = new JLabel("Email id:");
+		EmailLB.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		EmailLB.setBounds(27, 331, 116, 40);
+		contentPane.add(EmailLB);
+		
+		EmailTF = new JTextField();
+		EmailTF.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		EmailTF.setColumns(10);
+		EmailTF.setBounds(153, 331, 116, 40);
+		contentPane.add(EmailTF);
+		
+		JLabel GenderLB = new JLabel("Gender:");
+		GenderLB.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		GenderLB.setBounds(27, 392, 116, 40);
+		contentPane.add(GenderLB);
+		
+		JRadioButton MaleRadBT = new JRadioButton("Male");
+		MaleRadBT.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		MaleRadBT.setBounds(153, 399, 109, 23);
+		contentPane.add(MaleRadBT);
+		
+		JRadioButton FemaleRadBT = new JRadioButton("Female");
+		FemaleRadBT.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		FemaleRadBT.setBounds(153, 425, 109, 23);
+		contentPane.add(FemaleRadBT);
+		
+		if(MaleRadBT.isSelected()) 
+	        gender="M";
+		else if(FemaleRadBT.isSelected()) 
+	        gender="F";
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(337, 168, 437, 245);
+		contentPane.add(scrollPane);
+		
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		
+		JButton InsertBT = new JButton("Insert");
+		InsertBT.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String query = "insert into patient(PID,PName,DOB,Email,MOBILE,Gender) values (?,?,?,?,?,?)";
+					PreparedStatement pst = conn.prepareStatement(query);
+					
+					pst.setString(1,IdTF.getText());
+					pst.setString(2,NameTF.getText());
+					pst.setString(3,DobTF.getText());
+					pst.setString(4,EmailTF.getText());
+					pst.setString(5,PhoneTF.getText());
+					pst.setString(6,gender.toUpperCase());
+					
+					int rs = pst.executeUpdate();
+					
+					JOptionPane.showMessageDialog(null, "Data added.");
+					
+
+				} catch (Exception ae) {
+					ae.printStackTrace();
+				}
+			}
+		});
+		InsertBT.setBounds(401, 55, 116, 33);
+		contentPane.add(InsertBT);
+		
+		JButton UpdateBT = new JButton("Update");
+		UpdateBT.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					//System.out.println("s and st are :"+ s + ", " + st);
+					String query = "update patient set PID='"+IdTF.getText()+"', PName='"+NameTF.getText()+"',DOB='"+DobTF.getText()+"', Email='"+EmailTF.getText()+"', MOBILE='"+PhoneTF.getText()+"',Gender='"+gender+"' where  idDoctor='"+IdTF.getText()+"'";
+					PreparedStatement pst = conn.prepareStatement(query);
+					
+					pst.executeUpdate();
+					
+					JOptionPane.showMessageDialog(null, "Data updated.");
+					
+
+				} catch (Exception ae) {
+					ae.printStackTrace();
+				}
+			}
+		});
+		UpdateBT.setBounds(596, 55, 116, 33);
+		contentPane.add(UpdateBT);
+		
+		JButton DeleteBT = new JButton("Delete");
+		DeleteBT.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int action = JOptionPane.showConfirmDialog(null, "Do you really want to delete:","Delete:",JOptionPane.YES_NO_OPTION);
+				if (action==0) {
+					try {
+						String query = "delete from patient where PID='"+IdTF.getText()+"'";
+						PreparedStatement pst = conn.prepareStatement(query);
+						
+						int rs = pst.executeUpdate();
+						
+						JOptionPane.showMessageDialog(null, "Data deleted.");
+						
+
+					} catch (Exception ae) {
+						ae.printStackTrace();
+					}
+				}
+			}
+		});
+		DeleteBT.setBounds(401, 111, 116, 33);
+		contentPane.add(DeleteBT);
+		
+		JButton DisplayBT = new JButton("Display");
+		DisplayBT.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String query = "select * from patient";
+					PreparedStatement pst = conn.prepareStatement(query);
+					ResultSet rs = pst.executeQuery(query);
+					
+
+				} catch (Exception ae) {
+					ae.printStackTrace();
+				}
+			}
+		});
+		DisplayBT.setBounds(596, 111, 116, 33);
+		contentPane.add(DisplayBT);
+		
+		JLabel lblNewLabel_1 = new JLabel("New label");
+		lblNewLabel_1.setBounds(0, 0, 997, 616);
+		lblNewLabel_1.setIcon(new ImageIcon("C:\\Users\\Dell\\Desktop\\mini project\\icons\\backfrm1.png"));
+		contentPane.add(lblNewLabel_1);
+	}
+}

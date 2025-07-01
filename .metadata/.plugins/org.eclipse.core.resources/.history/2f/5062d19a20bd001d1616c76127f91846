@@ -1,0 +1,284 @@
+package dbms;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import net.proteanit.sql.DbUtils;
+
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import javax.swing.JTextField;
+import javax.swing.JTabbedPane;
+import javax.swing.JCheckBox;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.awt.event.ActionEvent;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import javax.swing.ImageIcon;
+
+public class SampleFrame extends JFrame {
+
+	private JPanel contentPane;
+	private JTextField textField;
+	private JTextField textField_1;
+	private JTextField textField_2;
+	private JTextField textField_4;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					SampleFrame frame = new SampleFrame();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	Connection conn = null;
+
+	/**
+	 * Create the frame.
+	 */
+	public SampleFrame() {
+		conn = ConnectDB.dbConnector();
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 800, 500);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel SamplesLB = new JLabel("Samples:");
+		SamplesLB.setFont(new Font("Times New Roman", Font.BOLD, 30));
+		SamplesLB.setBounds(35, 15, 195, 35);//45, 35, 195, 35
+		contentPane.add(SamplesLB);
+		
+		JLabel SamIdLB = new JLabel("Sample ID:");
+		SamIdLB.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		SamIdLB.setBounds(73, 62, 67, 22);
+		contentPane.add(SamIdLB);
+		
+		textField_4 = new JTextField();
+		textField_4.setBounds(184, 62, 122, 22);
+		contentPane.add(textField_4);
+		textField_4.setColumns(10);
+		
+		JLabel PatIdLB = new JLabel("Patient ID:");
+		PatIdLB.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		PatIdLB.setBounds(75, 98, 65, 22);
+		contentPane.add(PatIdLB);
+		
+		textField = new JTextField();
+		textField.setBounds(184, 99, 122, 22);
+		contentPane.add(textField);
+		textField.setColumns(10);
+		
+		JLabel DateLB = new JLabel("Date:");
+		DateLB.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		DateLB.setBounds(75, 131, 65, 22);
+		contentPane.add(DateLB);
+		
+		textField_1 = new JTextField();
+		textField_1.setBounds(184, 133, 122, 20);
+		contentPane.add(textField_1);
+		textField_1.setColumns(10);
+		
+		JLabel lblNewLabel = new JLabel("Tech ID:");
+		lblNewLabel.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		lblNewLabel.setBounds(75, 163, 65, 22);
+		contentPane.add(lblNewLabel);
+		
+		textField_2 = new JTextField();
+		textField_2.setBounds(184, 164, 122, 22);
+		contentPane.add(textField_2);
+		textField_2.setColumns(10);
+		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(45, 195, 337, 255);
+		contentPane.add(tabbedPane);
+		
+		JPanel panel = new JPanel();
+		tabbedPane.addTab("Blood", null, panel, null);
+		panel.setLayout(null);
+		
+		final JCheckBox RbcCB = new JCheckBox("RBC");
+		RbcCB.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		RbcCB.setBounds(57, 29, 97, 23);
+		panel.add(RbcCB);
+		
+		final JCheckBox WbcCB = new JCheckBox("WBC Count");
+		WbcCB.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		WbcCB.setBounds(57, 74, 134, 23);
+		panel.add(WbcCB);
+		
+		final JCheckBox HemglbCB = new JCheckBox("Hemoglobin");
+		HemglbCB.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		HemglbCB.setBounds(57, 120, 111, 23);
+		panel.add(HemglbCB);
+		
+		final JCheckBox BloUrCB = new JCheckBox("Blood urea");
+		BloUrCB.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		BloUrCB.setBounds(57, 167, 97, 23);
+		panel.add(BloUrCB);
+		
+		JPanel panel_1 = new JPanel();
+		tabbedPane.addTab("Urine", null, panel_1, null);
+		panel_1.setLayout(null);
+		
+		final JCheckBox WetMndCB = new JCheckBox("Wet mount");
+		WetMndCB.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		WetMndCB.setBounds(62, 51, 97, 23);
+		panel_1.add(WetMndCB);
+		
+		final JCheckBox CulSenCB = new JCheckBox("Culture sensitivity");
+		CulSenCB.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		CulSenCB.setBounds(62, 103, 144, 23);
+		panel_1.add(CulSenCB);
+		
+		final JCheckBox PrtCB = new JCheckBox("For protein");
+		PrtCB.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		PrtCB.setBounds(62, 163, 97, 23);
+		panel_1.add(PrtCB);
+		
+		JPanel panel_2 = new JPanel();
+		tabbedPane.addTab("Stool", null, panel_2, null);
+		panel_2.setLayout(null);
+		
+		final JCheckBox OccBldCB = new JCheckBox("For occult blood");
+		OccBldCB.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		OccBldCB.setBounds(65, 40, 239, 23);
+		panel_2.add(OccBldCB);
+		
+		final JCheckBox HngDrpCB = new JCheckBox("Stool for hanging drop");
+		HngDrpCB.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		HngDrpCB.setBounds(65, 111, 239, 23);
+		panel_2.add(HngDrpCB);
+		
+		final JCheckBox StCulSenCB = new JCheckBox("Stool culture and sensitivity");
+		StCulSenCB.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		StCulSenCB.setBounds(65, 173, 239, 23);
+		panel_2.add(StCulSenCB);
+		
+		JButton BackBT = new JButton("Back");
+		BackBT.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MainFrame MF = new MainFrame();
+				MF.setVisible(true);
+			}
+		});
+		BackBT.setBounds(634, 401, 102, 35);
+		contentPane.add(BackBT);
+		
+		JButton InsertBT = new JButton("Insert");
+		InsertBT.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String query = "insert into samples(Sid,Pid,Date,TechID,B1,B2,B3,B4,U1,U2,U3,S1,S2,S3) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+					PreparedStatement pst = conn.prepareStatement(query);
+					
+					pst.setString(1,textField_4.getText());
+					pst.setString(2,textField.getText());
+					pst.setString(3,textField_1.getText());
+					pst.setString(4,textField_2.getText());
+					String B1 = "";
+					if(RbcCB.isSelected())
+					{
+						B1+=RbcCB.getText()+" ";
+					}
+					pst.setString(5,B1);
+					String B2 = "";
+					if(WbcCB.isSelected())
+					{
+						B2+=WbcCB.getText()+" ";
+					}
+					pst.setString(6,B2);
+					String B3 = "";
+					if(HemglbCB.isSelected())
+					{
+						B3+=HemglbCB.getText()+" ";
+					}
+					pst.setString(7,B3);
+					String B4 = "";
+					if(BloUrCB.isSelected())
+					{
+						B4+=BloUrCB.getText()+" ";
+					}
+					pst.setString(8,B4);
+					String U1 = "";
+					if(WetMndCB.isSelected())
+					{
+						U1+=WetMndCB.getText()+" ";
+					}
+					pst.setString(9,U1);
+					String U2 = "";
+					if(CulSenCB.isSelected())
+					{
+						U2+=CulSenCB.getText()+" ";
+					}
+					pst.setString(10,U2);
+					String U3 = "";
+					if(PrtCB.isSelected())
+					{
+						U3+=PrtCB.getText()+" ";
+					}
+					pst.setString(11,U3);
+					String S1 = "";
+					if(OccBldCB.isSelected())
+					{
+						S1+=OccBldCB.getText()+" ";
+					}
+					pst.setString(12,S1);
+					String S2 = "";
+					if(HngDrpCB.isSelected())
+					{
+						S2+=HngDrpCB.getText()+" ";
+					}
+					pst.setString(13,S2);
+					String S3 = "";
+					if(StCulSenCB.isSelected())
+					{
+						S3+=StCulSenCB.getText()+" ";
+					}
+					pst.setString(14,S3);
+					int rs = pst.executeUpdate();
+					JOptionPane.showMessageDialog(null, "Data added.");
+					
+
+				} catch (Exception ae) {
+					JOptionPane.showMessageDialog(null, "Enter required information correctly");
+				}
+			}
+		});	
+		InsertBT.setBounds(466, 401, 102, 35);
+		contentPane.add(InsertBT);
+		
+		JLabel SampImgLB = new JLabel("New label");
+		SampImgLB.setIcon(new ImageIcon("G:\\My Drive\\mini project\\icons\\sam1.jpg"));
+		SampImgLB.setBounds(440, 35, 315, 330);
+		contentPane.add(SampImgLB);
+		
+		JLabel lblNewLabel = new JLabel("New label");
+		lblNewLabel.setBounds(0, 0, 807, 462);
+		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\Dell\\Desktop\\mini project\\icons\\backfrm1.png"));
+		frame.getContentPane().add(lblNewLabel);
+		
+		
+	}
+	
+}
